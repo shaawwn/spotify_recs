@@ -1,0 +1,21 @@
+# Node modules
+spotify/node_modules/
+spotify_auth_server/node_modules/
+
+# Environment variables
+spotify/.env
+spotify_auth_server/.env
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store
+
+# Build directories
+spotify/build/
+spotify_auth_server/build/
+
+# IDE-specific files
+.vscode/
+.idea/

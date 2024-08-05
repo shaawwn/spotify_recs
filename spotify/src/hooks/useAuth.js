@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 function useAuth(code) {
 //
@@ -23,12 +23,18 @@ function useAuth(code) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({code: code})
-        }).then((response) => response.json())
-        .then((data) => {
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error("error fetching spotify access tokens")
+            }
+            return response.json()
+        }).then((data) => {
             setAccessToken(data.accessToken)
             setRefreshToken(data.refreshToken)
             setExpiresIn(data.expiresIn)
             window.history.pushState({}, null, '/')
+        }).catch((err) => {
+            console.log("err", err)
         })
     }, [code])
 
@@ -44,10 +50,16 @@ function useAuth(code) {
                 body: JSON.stringify({
                     refreshToken: refreshToken
                 })
-            }).then((response) => response.json())
-            .then((data) => {
+            }).then((response) => {
+                if(!response.ok) {
+                    throw new Error("error refreshing token")
+                }
+                return response.json()
+            }).then((data) => {
                 setAccessToken(data.accessToken)
                 setExpiresIn(data.expiresIn)
+            }).catch((err) => {
+                console.log("err: ", err)
             })
         }, (expiresIn - 60) * 1000)
 

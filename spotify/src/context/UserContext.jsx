@@ -1,7 +1,11 @@
 import React, {useState, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import useAuth from '../hooks/useAuth'
+
+
+import {useAuthContext} from './AuthContext'
 const UserContext = React.createContext()
+
+
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function useUserContext() {
@@ -9,9 +13,9 @@ export function useUserContext() {
 }
 
 
-export default function UserProvider({children, code}) {
+export default function UserProvider({children}) {
 
-    const accessToken = useAuth(code)
+    const accessToken = useAuthContext().accessToken
     const [user, setUser] = useState()
     
     useEffect(() => {
@@ -47,5 +51,4 @@ export default function UserProvider({children, code}) {
 
 UserProvider.propTypes = {
     children: PropTypes.node.isRequired,
-    code: PropTypes.string.isRequired,
 };

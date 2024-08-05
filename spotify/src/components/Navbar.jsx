@@ -8,8 +8,8 @@ export default function Navbar() {
     }
     
     return(
-        <nav className="flex justify-between">
-            <h1 className="text-red-400">Hello, {user.display_name} </h1>
+        <nav className="flex justify-between p-1">
+            <h1 className="">Hello, {user.display_name} </h1>
 
             <div className="flex gap-[10px]">
                 <a className="button green" onClick={handleLogout}>Logout</a>

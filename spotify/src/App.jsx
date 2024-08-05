@@ -1,5 +1,4 @@
 
-import './index.css'
 import {getAuthUrl} from './utils/auth.js'
 import Dashboard from './Dashboard.jsx'
 import Login from './Login.jsx'

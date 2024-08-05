@@ -28,6 +28,7 @@ function useAuth(code) {
             setAccessToken(data.accessToken)
             setRefreshToken(data.refreshToken)
             setExpiresIn(data.expiresIn)
+            window.history.pushState({}, null, '/')
         })
     }, [code])
 

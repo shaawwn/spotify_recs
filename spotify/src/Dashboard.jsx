@@ -1,38 +1,22 @@
-import {useEffect, useState} from 'react'
-import PropTypes from 'prop-types'
-import useAuth from './hooks/useAuth'
 
-function Dashboard({code}) {
+// import PropTypes from 'prop-types'
 
-    const [user, setUser] = useState()
-    
-    const accessToken = useAuth(code)
+import {useUserContext} from './context/UserContext'
+import Navbar from './components/Navbar'
 
-    useEffect(() => {
-        if(accessToken && !user) {
-            fetch(`https://api.spotify.com/v1/me`, {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            }).then((response) => response.json())
-            .then((data) => {
-                console.log(data)
-                setUser(data)
-            })
-        }
-    }, [accessToken])
+
+
+export default function Dashboard() {
+    const user = useUserContext().user
+
     return(
         <div>
-            {user ? <h1>Hello, {user.display_name}</h1> : <h1>Welcome, guest</h1>}
-
-            <a href="https://www.spotify.com/logout">Logout</a>
-            <hr/>
-            <a href="http://localhost:5173">Back</a>
+            {user && <Navbar />}
         </div>
     )
 }
 
 Dashboard.propTypes = {
-    code: PropTypes.string.isRequired
+
 }
-export default Dashboard
+

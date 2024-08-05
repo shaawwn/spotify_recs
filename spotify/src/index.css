@@ -47,7 +47,11 @@ h1 {
   font-size: 1.5rem;
 }
 
-.button.green {
+.button-small {
+
+}
+
+.green {
   background-color: var(--spotify-green);
   color: var(--spotify-white);
 }

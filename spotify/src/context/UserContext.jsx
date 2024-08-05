@@ -6,7 +6,6 @@ import {useAuthContext} from './AuthContext'
 const UserContext = React.createContext()
 
 
-
 // eslint-disable-next-line react-refresh/only-export-components
 export function useUserContext() {
     return useContext(UserContext)
@@ -31,7 +30,6 @@ export default function UserProvider({children}) {
                 return response.json()
             })
             .then((data) => {
-                console.log(data)
                 setUser(data)
             }).catch((err) => {
                 console.log("Error fetching user data", err)
@@ -42,7 +40,7 @@ export default function UserProvider({children}) {
 
     return(
         <>
-            <UserContext.Provider value={{user, setUser}}>
+            <UserContext.Provider value={{user}}>
                 {children}
             </UserContext.Provider>
         </>

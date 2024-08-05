@@ -46,10 +46,11 @@ h1 {
 
 .button {
   width: 100px;
-  padding: 1rem;
+  padding: .5rem;
   margin: auto;
   border-radius: 5px;
-  font-size: 1.5rem;
+  font-size: 1.125rem;
+  text-align:center;
 }
 
 .button-small {

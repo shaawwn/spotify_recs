@@ -36,6 +36,7 @@ function useAuth(code) {
         }).catch((err) => {
             console.log("err", err)
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [code])
 
     useEffect(() => {

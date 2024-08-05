@@ -1,5 +1,9 @@
 
+
+import SearchInput from './Search'
 import {useUserContext} from '../context/UserContext'
+
+
 export default function Navbar() {
     const user = useUserContext().user
     const redirectUri = import.meta.env.VITE_REDIRECT_URI
@@ -9,8 +13,8 @@ export default function Navbar() {
     
     return(
         <nav className="flex justify-between p-1">
-            <h1 className="">Hello, {user.display_name} </h1>
-
+            <h2 className="text-2xl">Hello, {user.display_name} </h2>
+            <SearchInput />
             <div className="flex gap-[10px]">
                 <a className="button green" onClick={handleLogout}>Logout</a>
                 <a className="button green" href={redirectUri}>Back</a>

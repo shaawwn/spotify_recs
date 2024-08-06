@@ -7,7 +7,6 @@ export default function MainViewport({children}) {
 
     return(
         <main>
-            <h1>Main content to display here.</h1>
             {children}
         </main>
     )

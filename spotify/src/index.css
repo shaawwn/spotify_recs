@@ -89,6 +89,14 @@ button:focus-visible {
   /* margin: 0 auto; */
 }
 
+
+.panel {
+  padding: 1rem;
+  box-shadow: 0px 0px 5px 5px rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  /* background-color: red; */
+  /* width: 20%; */
+}
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

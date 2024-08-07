@@ -7,7 +7,7 @@ export default function Login({auth_url}) {
         <>
             <div className="viewport-centered">
                 <img className="logo-med" src={SpotifyLogoGreen}/>
-                <h1>Spotify Starter Kit</h1>
+                <h1>Discover new music with Spotify</h1>
                 <a className="button green" href={auth_url}>Login</a>
             </div>
         </>

@@ -15,7 +15,6 @@ import AuthProvider from './context/AuthContext.jsx'
 import SpotifyApiProvider from './context/SpotifyApiContext.jsx'
 
 function Providers({code}) {
-
 	return (
 		<AuthProvider code={code}>
 			<SpotifyApiProvider>

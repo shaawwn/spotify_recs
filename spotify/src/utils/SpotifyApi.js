@@ -7,6 +7,22 @@ export default class SpotifyApi {
         this.apiUrl = 'https://api.spotify.com/v1/'
     }
 
+    getCurrentUser() {
+        return fetch(this.apiUrl + `me`, {
+            headers: {
+                'Authorization': `Bearer ${this.accessToken}`
+            }
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error('Error getting related artists')
+            }
+            return response.json()
+        }).then((data) => {
+            return data
+        }).catch((err) => {
+            console.log("err: ", err)
+        })
+    }
     getRelatedArtists(id) {
         // spotify artist id
         return fetch(this.apiUrl + `artists/${id}/related-artists`, {

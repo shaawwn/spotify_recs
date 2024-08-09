@@ -22,21 +22,16 @@ export default function Dashboard() {
 
     const renderCount = useRef(0)
     renderCount.current++
-    console.log("renders: ", renderCount.current)
+    // console.log("renders: ", renderCount.current)
 
-
-    // useEffect(() => {
-
-
-    // }, [spotifyApi])
 
     return(
         <div>
             {user && <Navbar />}
             <MainViewport>
                 {topTracks && topArtists && 
-                    <div className="flex">
-                        <div className="flex flex-col">
+                    <div className={window.innerWidth < 764? "flex flex-col" :"flex"}>
+                        <div className="flex flex-col"> 
                             {recommendedArtists && 
                                 <Panel title="Recommended Artists">
                                     <Grid items={recommendedArtists}

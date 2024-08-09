@@ -12,8 +12,8 @@ export default function Navbar() {
     }
     
     return(
-        <nav className="flex justify-between p-1">
-            <h2 className="text-2xl">Hello, {user.display_name} </h2>
+        <nav className="navbar">
+            <h2 className="text-[16px] xl:text-2xl">Hello, {user.display_name} </h2>
             <SearchInput />
             <div className="flex gap-[10px]">
                 <a className="button green" onClick={handleLogout}>Logout</a>

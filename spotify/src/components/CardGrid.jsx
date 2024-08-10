@@ -19,15 +19,11 @@ export default function Grid({items, limit, getRecs}) {
                 item.images && item.images[1].url ? 
                 <GridItem 
                     key={index} 
-                    alt={item.name}
-                    id={item.id} 
-                    imgSrc={item.images[1].url}
+                    item={item}
                     getRecs={getRecs}
                     />
                 :<GridItem 
                     key={index} 
-                    alt="default album cover image" 
-                    imgSrc={DefaultImage}
                     getRecs={getRecs}
                     />
                 
@@ -37,20 +33,21 @@ export default function Grid({items, limit, getRecs}) {
 }
 
 
-function GridItem({imgSrc, id, alt, getRecs}) {
+function GridItem({item, getRecs}) {
 
     function handleClick() {
         // needs access to artistID
-        if(id) {
-            getRecs(id)
+        console.log("get recs in click", item)
+        if(item) {
+            getRecs(item)
         }
     }
 
     return(
         <div className="grid__item">
             <img 
-                alt={alt} 
-                src={imgSrc}
+                alt={item.name} 
+                src={item.images && item.images[0].url ? item.images[0].url : DefaultImage}
                 onClick={handleClick}
                 ></img>
         </div>
@@ -64,6 +61,5 @@ Grid.propTypes = {
 }
 
 GridItem.propTypes ={
-    imgSrc: PropTypes.string,
-    alt: PropTypes.string.isRequired
+    item: PropTypes.object.isRequired
 }

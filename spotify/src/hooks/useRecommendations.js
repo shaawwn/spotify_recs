@@ -4,10 +4,15 @@ import {useSpotifyApiContext} from '../context/SpotifyApiContext'
 export default function useRecommendations() {
 
     const {spotifyApi} = useSpotifyApiContext()
-    const [topTracks, setTopTracks] = useState(null) // top items are default state for recommendations, but getting recs can change dependin ont he seeds
+
+    // topTracks, topArtists are static state as default
+    const [topTracks, setTopTracks] = useState(null) 
     const [topArtists, setTopArtists] = useState(null)
+
+    // seedTracks, seeedArtists are dynamic state that will update when items are clicked to get new recc
     const [seedTracks, setSeedTracks] = useState(null)
     const [seedArtists, setSeedArtists] = useState(null)
+
     const [recommendedArtists, setRecommendedArtists] = useState(null)
     const [recommendedTracks, setRecommendedTracks] = useState(null) 
 
@@ -15,13 +20,14 @@ export default function useRecommendations() {
         // get recs from both
     }
 
-    async function getRecsFromArtistSeeds(id) {
+    async function getRecsFromArtistSeeds(artist) {
         // feed it an artist id
-        console.log("Getting recs for ", id)
+        console.log("Getting recs for ", artist.id, seedArtists[0].name)
         try {
-            const recs = await spotifyApi.getRelatedArtists(id)
+            const recs = await spotifyApi.getRelatedArtists(artist.id)
             console.log(recs)
             setRecommendedArtists(recs.artists)
+            setSeedArtists([artist]) // set to the artist objects
         } catch (err) {
             console.log("err: ", err)
         }
@@ -59,10 +65,16 @@ export default function useRecommendations() {
                     spotifyApi.getUserTopItems('artists'),
                     spotifyApi.getUserTopItems('tracks')
                 ])
+
+                // these literally just exist to be the first default tracks, but I want to be able to navigate around recommendatiosn
                 setTopArtists(artistResponse.items)
                 setTopTracks(trackResponse.items)
-                setSeedTracks(artistResponse.items)
+
+                // these don't necessarily have to be the whole list, these are just the things that recommendations are being derived from, by default the FIRST in each list
+                setSeedTracks(trackResponse.items)
                 setSeedArtists(artistResponse.items) 
+
+
                 fetchRecommendations(artistResponse.items, trackResponse.items)
             } catch(error) {
                 console.log("error getting users top items", error)
@@ -74,7 +86,7 @@ export default function useRecommendations() {
 
     }, [spotifyApi])
 
-    // console.log()
 
-    return [seedTracks, seedArtists, recommendedArtists, recommendedTracks, getRecsFromArtistSeeds]
+
+    return [seedTracks, seedArtists, topArtists, topTracks, recommendedArtists, recommendedTracks, getRecsFromArtistSeeds]
 }

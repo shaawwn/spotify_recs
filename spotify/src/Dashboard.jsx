@@ -13,7 +13,9 @@ import Panel from './components/Panel'
 export default function Dashboard() {
     const {user} = useUserContext()
 
-    const [seedTracks, seedArtists,recommendedArtists, recommendedTracks, getRecsFromArtistSeeds] = useRecommendations()
+    const [seedTracks, seedArtists,topArtists, topTracks, recommendedArtists, recommendedTracks, getRecsFromArtistSeeds] = useRecommendations()
+
+  
     // const renderCount = useRef(0)
     // renderCount.current++
     // console.log("renders: ", renderCount.current)
@@ -27,13 +29,14 @@ export default function Dashboard() {
                     <div className={window.innerWidth < 764? "flex flex-col" :"flex"}>
                         <div className="flex flex-col"> 
                             {recommendedArtists && 
-                                <Panel title="Recommended Artists">
+                                <Panel title={`Similar to ${seedArtists[0].name}`}>
                                     <Grid items={recommendedArtists}
                                     limit={10}
                                     getRecs={getRecsFromArtistSeeds}
                                     />
                                 </Panel>}
                             {recommendedTracks &&
+                            // Needs to be "Like Nobuo Uematasu/Whoever"
                                 <Panel title="Recommended Tracks">
                                     <TrackTable items={recommendedTracks}
                                     />
@@ -42,7 +45,7 @@ export default function Dashboard() {
                         </div>
                         <Panel title="Top Artists">
                             <Grid 
-                                items={seedArtists}
+                                items={topArtists}
                                 limit={20}
                                 getRecs={getRecsFromArtistSeeds}
                                 />

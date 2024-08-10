@@ -1,7 +1,7 @@
-import {useEffect, useState, useRef} from 'react'
+// import {useEffect, useState, useRef} from 'react'
 
 import {useUserContext} from './context/UserContext'
-import {useSpotifyApiContext} from './context/SpotifyApiContext'
+// import {useSpotifyApiContext} from './context/SpotifyApiContext'
 
 import useRecommendations from './hooks/useRecommendations'
 import Navbar from './components/Navbar'
@@ -12,16 +12,10 @@ import Panel from './components/Panel'
 
 export default function Dashboard() {
     const {user} = useUserContext()
-    const {spotifyApi} = useSpotifyApiContext()
 
-    // const [topArtists, setTopArtists] = useState(null)
-    // const [topTracks, setTopTracks] = useState(null)
-
-
-    const [topTracks, topArtists,recommendedArtists, recommendedTracks] = useRecommendations()
-
-    const renderCount = useRef(0)
-    renderCount.current++
+    const [seedTracks, seedArtists,recommendedArtists, recommendedTracks, getRecsFromArtistSeeds] = useRecommendations()
+    // const renderCount = useRef(0)
+    // renderCount.current++
     // console.log("renders: ", renderCount.current)
 
 
@@ -29,13 +23,15 @@ export default function Dashboard() {
         <div>
             {user && <Navbar />}
             <MainViewport>
-                {topTracks && topArtists && 
+                {seedTracks && seedArtists && 
                     <div className={window.innerWidth < 764? "flex flex-col" :"flex"}>
                         <div className="flex flex-col"> 
                             {recommendedArtists && 
                                 <Panel title="Recommended Artists">
                                     <Grid items={recommendedArtists}
-                                    limit={10}/>
+                                    limit={10}
+                                    getRecs={getRecsFromArtistSeeds}
+                                    />
                                 </Panel>}
                             {recommendedTracks &&
                                 <Panel title="Recommended Tracks">
@@ -46,8 +42,9 @@ export default function Dashboard() {
                         </div>
                         <Panel title="Top Artists">
                             <Grid 
-                                items={topArtists}
+                                items={seedArtists}
                                 limit={20}
+                                getRecs={getRecsFromArtistSeeds}
                                 />
                         </Panel>
                     </div>

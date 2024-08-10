@@ -1,15 +1,35 @@
+import {useEffect} from 'react'
 import PropTypes from 'prop-types'
 
 import DefaultImage from '../assets/images/default.png'
-export default function Grid({items, limit}) {
+
+export default function Grid({items, limit, getRecs}) {
     // console.log('grid items', items)
     // tracks is going to be items.item.album.images
+    // console.log(getRecs)
+
+    useEffect(() => {
+
+    }, [items])
+
     return(
         <div className="grid">
+
             {items.slice(0, limit).map((item, index) => 
                 item.images && item.images[1].url ? 
-                <GridItem key={index} alt={item.name} imgSrc={item.images[1].url}/>
-                :<GridItem key={index} alt="default album cover image" imgSrc={DefaultImage}/>
+                <GridItem 
+                    key={index} 
+                    alt={item.name}
+                    id={item.id} 
+                    imgSrc={item.images[1].url}
+                    getRecs={getRecs}
+                    />
+                :<GridItem 
+                    key={index} 
+                    alt="default album cover image" 
+                    imgSrc={DefaultImage}
+                    getRecs={getRecs}
+                    />
                 
             )}         
         </div>
@@ -17,10 +37,13 @@ export default function Grid({items, limit}) {
 }
 
 
-function GridItem({imgSrc, alt}) {
+function GridItem({imgSrc, id, alt, getRecs}) {
 
-    function handleClick(e) {
-        console.log("clicking", e.target)
+    function handleClick() {
+        // needs access to artistID
+        if(id) {
+            getRecs(id)
+        }
     }
 
     return(
@@ -28,7 +51,7 @@ function GridItem({imgSrc, alt}) {
             <img 
                 alt={alt} 
                 src={imgSrc}
-                onClick={(e) => handleClick(e)}
+                onClick={handleClick}
                 ></img>
         </div>
     )

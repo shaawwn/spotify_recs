@@ -4,19 +4,46 @@ import {useSpotifyApiContext} from '../context/SpotifyApiContext'
 export default function useRecommendations() {
 
     const {spotifyApi} = useSpotifyApiContext()
-    const [topTracks, setTopTracks] = useState(null)
+    const [topTracks, setTopTracks] = useState(null) // top items are default state for recommendations, but getting recs can change dependin ont he seeds
     const [topArtists, setTopArtists] = useState(null)
     const [seedTracks, setSeedTracks] = useState(null)
     const [seedArtists, setSeedArtists] = useState(null)
     const [recommendedArtists, setRecommendedArtists] = useState(null)
     const [recommendedTracks, setRecommendedTracks] = useState(null) 
 
+    function getRecsFromSeeds() {
+        // get recs from both
+    }
+
+    async function getRecsFromArtistSeeds(id) {
+        // feed it an artist id
+        console.log("Getting recs for ", id)
+        try {
+            const recs = await spotifyApi.getRelatedArtists(id)
+            console.log(recs)
+            setRecommendedArtists(recs.artists)
+        } catch (err) {
+            console.log("err: ", err)
+        }
+    }
+
+    const getRecsFromTrackSeeds = async () => {
+
+        // I want to click on a track, call this funciton, and return recommendations
+        try {
+            const recs = await spotifyApi.getTrackRecommendations([], [], [])
+
+            console.log("recs from seeds")
+        } catch (err) {
+            console.log("err: ", err)
+        }
+    }
+
     useEffect(() => {
 
         const fetchUserTopItems  = async () => {
 
             const fetchRecommendations = async (artists, tracks) => {
-                console.log("Getting recs")
                 try {
                     const artistRecs = await spotifyApi.getRelatedArtists(artists[0].id)
                     setRecommendedArtists(artistRecs.artists)
@@ -33,11 +60,10 @@ export default function useRecommendations() {
                     spotifyApi.getUserTopItems('tracks')
                 ])
                 setTopArtists(artistResponse.items)
-                setTopTracks(trackResponse.items) 
+                setTopTracks(trackResponse.items)
+                setSeedTracks(artistResponse.items)
+                setSeedArtists(artistResponse.items) 
                 fetchRecommendations(artistResponse.items, trackResponse.items)
-
-                // I could probably get default recs here
-
             } catch(error) {
                 console.log("error getting users top items", error)
             }
@@ -48,31 +74,7 @@ export default function useRecommendations() {
 
     }, [spotifyApi])
 
-    // useEffect(() => {
-    //     console.log("getting recs useEffect", spotifyApi)
-    //     if(spotifyApi) {
-    //         const fetchRecommendations = async () => {
-    //             try {
-    //                 const artistRecs = await spotifyApi.getRelatedArtists(topArtists[0].id)
-    //                 setRecommendedArtists(artistRecs.artists)
-        
-    //                 const trackRecs = await spotifyApi.getTrackRecommendations([], [topTracks[0].id], [])
-    //                 setRecommendedTracks(trackRecs.tracks)
-    //             } catch(error) {
-    //                 console.log("error getting recommended items", error)
-    //             }
-    //         }
-    //         if(topArtists && topTracks && !recommendedArtists || !recommendedTracks) {
-    //             console.log("Ready to get recs in hook", topTracks, topArtists)
-    //             console.log(recommendedArtists, recommendedTracks)
-    //             fetchRecommendations()
-    //         } else {
-    //             console.log("Not quite ready to get recs in hook", topTracks, topArtists)
-    //         }
-    //     }
+    // console.log()
 
-    // }, [])
-
-    // console.log("hook recs", recommendedArtists, recommendedTracks)
-    return [topTracks, topArtists, recommendedArtists, recommendedTracks]
+    return [seedTracks, seedArtists, recommendedArtists, recommendedTracks, getRecsFromArtistSeeds]
 }

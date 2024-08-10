@@ -36,8 +36,8 @@ export default function Dashboard() {
                                     />
                                 </Panel>}
                             {recommendedTracks &&
-                            // Needs to be "Like Nobuo Uematasu/Whoever"
-                                <Panel title="Recommended Tracks">
+                            // Needs to be "Like Nobuo Uematasu/Whoever Tracks"
+                                <Panel title={`Similar to ${seedArtists[0].name}`}>
                                     <TrackTable items={recommendedTracks}
                                     />
                                 </Panel>

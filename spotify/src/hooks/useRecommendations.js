@@ -1,6 +1,8 @@
 import {useState, useEffect} from 'react'
 import {useSpotifyApiContext} from '../context/SpotifyApiContext'
 
+import {getRandoms, getRecArtistArray} from '../utils/utils'
+
 export default function useRecommendations() {
 
     const {spotifyApi} = useSpotifyApiContext()
@@ -16,18 +18,38 @@ export default function useRecommendations() {
     const [recommendedArtists, setRecommendedArtists] = useState(null)
     const [recommendedTracks, setRecommendedTracks] = useState(null) 
 
+    const [recommendedArtistPlaylist, setRecommendedArtistPlaylist] = useState(null) // make playlist with tacks from recommended artists(TODO)
+
     function getRecsFromSeeds() {
         // get recs from both
     }
 
+    async function genPlaylistFromRecommendedArtists() {
+        // using the recommended artists, generate a playlist with one song from each artist. Use a random number from 0-number of songs from artist
+
+        // might not be doable with spotifyAPI since it would require getting all songs from an artist (or at least 5) and you cant just make 20 consecutive API calls. But, I could get 5 random artists and use their IDs to generate a recommended playlist
+
+        // get 5 numbers between 0, 20 
+        let indices = getRandoms(5, 20)
+    }
     async function getRecsFromArtistSeeds(artist) {
         // feed it an artist id
-        console.log("Getting recs for ", artist.id, seedArtists[0].name)
         try {
             const recs = await spotifyApi.getRelatedArtists(artist.id)
             console.log(recs)
             setRecommendedArtists(recs.artists)
-            setSeedArtists([artist]) // set to the artist objects
+            // setSeedArtists([artist]) 
+
+            // lets try getting the seeds for track recs
+            const indices = getRandoms(5, recs.artists.length)
+            console.log("artist indices", indices)
+            const arr = getRecArtistArray(indices, recs.artists)
+            // we'll call arr the new seed Artists
+            // push the artist to front of array
+            console.log("arr before splice", arr)
+            arr.splice(0,0, artist)
+            console.log("seed artists", arr)
+            setSeedArtists(arr)
         } catch (err) {
             console.log("err: ", err)
         }

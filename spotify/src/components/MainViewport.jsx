@@ -1,4 +1,4 @@
-
+import PropTypes from 'prop-types'
 
 export default function MainViewport({children}) {
     // the container for the primary content of the app, display albums, tracks, search results, playlist etc here
@@ -10,4 +10,8 @@ export default function MainViewport({children}) {
             {children}
         </main>
     )
+}
+
+MainViewport.propTypes = {
+    children: PropTypes.object
 }

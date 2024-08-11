@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 
 
-export default function TrackTable({items}) {
+export default function TrackTable({items, getRecs}) {
 
     function formatDuration(duration) {
         // utc to minutes:seconds
@@ -10,7 +10,17 @@ export default function TrackTable({items}) {
         const seconds = totalSeconds % 60;
         return `${minutes.toString()}:${seconds.toString().padStart(2, '0')}`;
     }
+
+    function resetRecommendations() {
+        getRecs([], [], [], true)
+    }
     return(
+        <div>
+            <button onClick={resetRecommendations}
+            className="bg-slate-400 p-1">Reset Recommendations</button>
+            <button onClick={resetRecommendations}
+            className="bg-slate-400 p-1">Save playlist</button>
+
         <table>
             <tbody>
                 <tr>
@@ -29,9 +39,11 @@ export default function TrackTable({items}) {
                 )}
             </tbody>
         </table>
+        </div>
     )
 }
 
 TrackTable.propTypes = {
-    items: PropTypes.array.isRequired
+    items: PropTypes.array.isRequired,
+    getRecs: PropTypes.func
 }

@@ -18,50 +18,43 @@ export default function useRecommendations() {
     const [recommendedArtists, setRecommendedArtists] = useState(null)
     const [recommendedTracks, setRecommendedTracks] = useState(null) 
 
-    const [recommendedArtistPlaylist, setRecommendedArtistPlaylist] = useState(null) // make playlist with tacks from recommended artists(TODO)
+    const [recommendedArtistPlaylist, setRecommendedArtistPlaylist] = useState(null) 
 
     function getRecsFromSeeds() {
         // get recs from both
     }
 
     async function genPlaylistFromRecommendedArtists() {
-        // using the recommended artists, generate a playlist with one song from each artist. Use a random number from 0-number of songs from artist
-
-        // might not be doable with spotifyAPI since it would require getting all songs from an artist (or at least 5) and you cant just make 20 consecutive API calls. But, I could get 5 random artists and use their IDs to generate a recommended playlist
-
-        // get 5 numbers between 0, 20 
-        let indices = getRandoms(5, 20)
+        // using seedArtists, which is an array of artists, generate recommended tracks. Ignore the first item, that is the artist whom the recs were generated from
     }
+
     async function getRecsFromArtistSeeds(artist) {
         // feed it an artist id
         try {
             const recs = await spotifyApi.getRelatedArtists(artist.id)
             console.log(recs)
             setRecommendedArtists(recs.artists)
-            // setSeedArtists([artist]) 
 
-            // lets try getting the seeds for track recs
+            // set seeds for track recommendations
             const indices = getRandoms(5, recs.artists.length)
-            console.log("artist indices", indices)
             const arr = getRecArtistArray(indices, recs.artists)
-            // we'll call arr the new seed Artists
-            // push the artist to front of array
-            console.log("arr before splice", arr)
             arr.splice(0,0, artist)
-            console.log("seed artists", arr)
             setSeedArtists(arr)
         } catch (err) {
             console.log("err: ", err)
         }
     }
 
-    const getRecsFromTrackSeeds = async () => {
-
-        // I want to click on a track, call this funciton, and return recommendations
-        try {
-            const recs = await spotifyApi.getTrackRecommendations([], [], [])
-
-            console.log("recs from seeds")
+    async function getRecsFromTrackSeeds(artists, tracks, genres, reset=false) {
+        // tracks - an array of trackIds, max 5
+        if(reset === true) {
+            setRecommendedTracks(null)
+            return
+        }
+        try{
+            const recs = await spotifyApi.getTrackRecommendations(artists, tracks, genres)
+            setRecommendedTracks(recs.tracks)
+            setSeedTracks(tracks)
         } catch (err) {
             console.log("err: ", err)
         }
@@ -76,8 +69,6 @@ export default function useRecommendations() {
                     const artistRecs = await spotifyApi.getRelatedArtists(artists[0].id)
                     setRecommendedArtists(artistRecs.artists)
         
-                    const trackRecs = await spotifyApi.getTrackRecommendations([], [tracks[0].id], [])
-                    setRecommendedTracks(trackRecs.tracks)
                 } catch(error) {
                     console.log("error getting recommended items", error)
                 }
@@ -110,5 +101,5 @@ export default function useRecommendations() {
 
 
 
-    return [seedTracks, seedArtists, topArtists, topTracks, recommendedArtists, recommendedTracks, getRecsFromArtistSeeds]
+    return [seedTracks, seedArtists, topArtists, topTracks, recommendedArtists, recommendedTracks, getRecsFromArtistSeeds, getRecsFromTrackSeeds]
 }

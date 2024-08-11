@@ -3,10 +3,7 @@ import PropTypes from 'prop-types'
 
 import DefaultImage from '../assets/images/default.png'
 
-export default function Grid({items, limit, getRecs}) {
-    // console.log('grid items', items)
-    // tracks is going to be items.item.album.images
-    // console.log(getRecs)
+export default function Grid({items, limit, getArtistRecs, getTrackRecs, artists, tracks}) {
 
     useEffect(() => {
 
@@ -20,11 +17,17 @@ export default function Grid({items, limit, getRecs}) {
                 <GridItem 
                     key={index} 
                     item={item}
-                    getRecs={getRecs}
+                    getArtistRecs={getArtistRecs}
+                    getTrackRecs={getTrackRecs}
+                    artists={artists}
+                    tracks={tracks}
                     />
                 :<GridItem 
                     key={index} 
-                    getRecs={getRecs}
+                    getArtistRecs={getArtistRecs}
+                    getTrackRecs={getTrackRecs}
+                    artists={artists}
+                    tracks={tracks}
                     />
                 
             )}         
@@ -33,13 +36,16 @@ export default function Grid({items, limit, getRecs}) {
 }
 
 
-function GridItem({item, getRecs}) {
+function GridItem({item, getArtistRecs, getTrackRecs, artists, tracks}) {
 
     function handleClick() {
         // needs access to artistID
         console.log("get recs in click", item)
-        if(item) {
-            getRecs(item)
+        if(artists === true) {
+            getArtistRecs(item)
+        } else if(tracks === true) {
+            getTrackRecs([item.id], [], [])
+            console.log("Getting track recs instead")
         }
     }
 

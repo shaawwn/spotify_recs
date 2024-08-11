@@ -1,4 +1,4 @@
-// import {useEffect, useState, useRef} from 'react'
+import {useRef} from 'react'
 
 import {useUserContext} from './context/UserContext'
 // import {useSpotifyApiContext} from './context/SpotifyApiContext'
@@ -7,49 +7,84 @@ import useRecommendations from './hooks/useRecommendations'
 import Navbar from './components/Navbar'
 import MainViewport from './components/MainViewport'
 import Grid from './components/CardGrid'
+import TrackGrid from './components/TrackGrid'
 import TrackTable from './components/TrackTable'
 import Panel from './components/Panel'
+
+
+// HOC
 
 export default function Dashboard() {
     const {user} = useUserContext()
 
-    const [seedTracks, seedArtists,topArtists, topTracks, recommendedArtists, recommendedTracks, getRecsFromArtistSeeds] = useRecommendations()
+    const [seedTracks, seedArtists,topArtists, topTracks, recommendedArtists, recommendedTracks, getRecsFromArtistSeeds, getRecsFromTrackSeeds] = useRecommendations()
 
   
-    // const renderCount = useRef(0)
-    // renderCount.current++
+    const renderCount = useRef(0)
+    renderCount.current++
     // console.log("renders: ", renderCount.current)
 
+    function renderTopItems() {
+
+        return(
+            <div className="flex flex-col">
+            <Panel title="Top Artists">
+                <Grid 
+                    items={topArtists}
+                    limit={20}
+                    getArtistRecs={getRecsFromArtistSeeds}
+                    getTrackRecs={getRecsFromTrackSeeds}
+                    tracks={false}
+                    artists={true}
+                    />
+                    
+            </Panel>
+        </div>
+        )
+    }
+
+    function renderRecommendedItems() {
+        return (
+            <div className="flex flex-col"> 
+            {recommendedArtists && 
+                <Panel title={`Similar to ${seedArtists[0].name}, select to get a playlist`}>
+                    <Grid items={recommendedArtists}
+                    limit={10}
+                    getArtistRecs={getRecsFromArtistSeeds}
+                    getTrackRecs={getRecsFromTrackSeeds}
+                    artist={false}
+                    tracks={true}
+                    />
+                </Panel>
+                }
+
+            {recommendedTracks ?
+            <Panel title={`Recommended tracks based on songs you like`}>
+                <TrackTable 
+                    items={recommendedTracks}
+                    getRecs={getRecsFromTrackSeeds}
+            />
+            </Panel>
+            :<Panel title="Select from your top tracks to get a recommended playlist">
+                
+            <TrackGrid 
+            items={topTracks} 
+            getRecs={getRecsFromTrackSeeds}
+            /></Panel>
+            }
+        </div>
+        )
+    }
 
     return(
         <div>
             {user && <Navbar />}
             <MainViewport>
                 {seedTracks && seedArtists && 
-                    <div className={window.innerWidth < 764? "flex flex-col" :"flex"}>
-                        <div className="flex flex-col"> 
-                            {recommendedArtists && 
-                                <Panel title={`Similar to ${seedArtists[0].name}`}>
-                                    <Grid items={recommendedArtists}
-                                    limit={10}
-                                    getRecs={getRecsFromArtistSeeds}
-                                    />
-                                </Panel>}
-                            {recommendedTracks &&
-                            // Needs to be "Like Nobuo Uematasu/Whoever Tracks"
-                                <Panel title={`Similar to ${seedArtists[0].name}`}>
-                                    <TrackTable items={recommendedTracks}
-                                    />
-                                </Panel>
-                            }
-                        </div>
-                        <Panel title="Top Artists">
-                            <Grid 
-                                items={topArtists}
-                                limit={20}
-                                getRecs={getRecsFromArtistSeeds}
-                                />
-                        </Panel>
+                    // This is the main dashboard dic
+                    <div className={window.innerWidth < 764? "flex flex-col" :"flex justify-center gap-[10px]"}>
+                        {renderRecommendedItems()}
+                        {renderTopItems()}
                     </div>
                 }
             </MainViewport>

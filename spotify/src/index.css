@@ -18,6 +18,7 @@
   --spotify-green: #1DB954;
   --spotify-green--hover: #34e472;
   --spotify-white: #FFFFFF;
+  --hot-pink: #FF1493;
   width: 100%;
 }
 
@@ -62,6 +63,11 @@ h1 {
   color: var(--spotify-white);
 }
 
+
+.hot-pink {
+	background-color: var(--hot-pink);
+	/* color: var(--spotify-black); */
+}
 .button.green:hover {
   background-color: var(--spotify-green--hover);
 }
@@ -69,6 +75,11 @@ h1 {
 button:hover {
   border-color: #646cff;
 }
+
+.hidden {
+	display: none;
+}
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -125,9 +136,29 @@ button:focus-visible {
     transition: transform 0.3s ease, z-index 0.3s ease;
 }
 
+.flexbox {
+	display: flex;
+	/* flex-direction: column; */
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.flexbox__item {
+	background-color: var(--spotify-green);
+	padding: .5rem;
+	border-radius: 7px;
+	transition: transform 0.3s ease, z-index 0.3s ease;
+}
+
+.flexbox__item:hover {
+    transform: scale(1.2);
+    z-index: 1;
+	cursor: pointer;
+}
 .grid__item:hover {
     transform: scale(1.2);
     z-index: 1;
+	cursor: pointer;
 }
 
 @media (prefers-color-scheme: light) {

@@ -17,11 +17,16 @@ import SpotifyApiProvider from './context/SpotifyApiContext.jsx'
 function Providers({code}) {
 	return (
 		<AuthProvider code={code}>
-			<SpotifyApiProvider>
+			<UserProvider>
+				<SpotifyApiProvider>
+					<Dashboard />
+				</SpotifyApiProvider>
+			</UserProvider>
+			{/* <SpotifyApiProvider>
 				<UserProvider>
 					<Dashboard />
 				</UserProvider>
-			</SpotifyApiProvider>
+			</SpotifyApiProvider> */}
 		</AuthProvider>
 	)
 }

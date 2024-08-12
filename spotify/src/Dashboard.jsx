@@ -4,6 +4,7 @@ import {useUserContext} from './context/UserContext'
 // import {useSpotifyApiContext} from './context/SpotifyApiContext'
 
 import useRecommendations from './hooks/useRecommendations'
+import Webplayer from '../src/components/WebPlayer'
 import Navbar from './components/Navbar'
 import MainViewport from './components/MainViewport'
 import Grid from './components/CardGrid'
@@ -88,6 +89,7 @@ export default function Dashboard() {
                     </div>
                 }
             </MainViewport>
+            <Webplayer />
         </div>
     )
 }

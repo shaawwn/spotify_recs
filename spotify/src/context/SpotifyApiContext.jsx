@@ -2,7 +2,7 @@ import React, {useState, useContext, useEffect} from 'react';
 import PropTypes from 'prop-types'
 import SpotifyApi from '../utils/SpotifyApi'
 import {useAuthContext} from './AuthContext'
-
+import {useUserContext} from './UserContext'
 const SpotifyApiContext = React.createContext()
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -13,14 +13,17 @@ export function useSpotifyApiContext() {
 export default function SpotifyApiProvider({children}) {
 
     const accessToken = useAuthContext().accessToken
+    const {user} = useUserContext()
     const [spotifyApi, setSpotifyApi] = useState()
 
     useEffect(() => {
-        if(accessToken) {
-            const api = new SpotifyApi(accessToken)
+
+        if(accessToken && user) {
+            console.log("SUER", user)
+            const api = new SpotifyApi(accessToken, user.id)
             setSpotifyApi(api)
         }
-    }, [accessToken])
+    }, [accessToken, user])
 
     return(
         <>

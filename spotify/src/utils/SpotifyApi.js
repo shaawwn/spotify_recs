@@ -7,6 +7,54 @@ export default class SpotifyApi {
         this.apiUrl = 'https://api.spotify.com/v1/'
     }
 
+    addTracksToPlaylist(playlistID, tracks) {
+
+        fetch(this.apiUrl + `playlists/${playlistID}/tracks`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${this.accessToken}`
+            },
+            body: JSON.stringify({
+                uris: tracks
+            })
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error('Error adding items to playlist')
+            }
+            return response.json()
+        }).then((data) => {
+            console.log("successfully added items to playlist")
+        })
+    }
+
+    saveAsPlaylist(tracks) {
+        // create and add items to playlist
+        fetch(this.apiUrl + `users/${this.userID}/playlists`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${this.accessToken}`
+            },
+            body: JSON.stringify({
+                name: "My new recommended playlist"
+            })
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error("Error creating new playlist")
+            }
+            return response.json()
+        }).then((data) => {
+            // returns a playlist, make calls to add items to this playlist here? Add items ([items])
+
+            // delay in spotify's servers
+            // this.addTracksToPlaylist(data.id, tracks)
+            // console.log("playlist", data)
+            // this.addTracksToPlaylist(data.id, tracks)
+            setTimeout(() => {
+                this.addTracksToPlaylist(data.id, tracks)
+            }, 1000)
+        })
+    }
+
     getCurrentUser() {
         return fetch(this.apiUrl + `me`, {
             headers: {

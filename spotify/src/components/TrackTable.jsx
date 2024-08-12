@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types'
-
+import {useSpotifyApiContext} from '../context/SpotifyApiContext'
 
 export default function TrackTable({items, getRecs}) {
+
+    const {spotifyApi} = useSpotifyApiContext()
 
     function formatDuration(duration) {
         // utc to minutes:seconds
@@ -14,11 +16,20 @@ export default function TrackTable({items, getRecs}) {
     function resetRecommendations() {
         getRecs([], [], [], true)
     }
+
+    function savePlaylist() {
+        console.log("Saving playlist")
+
+        const toAdd = items.map((item) => item.uri) 
+
+        spotifyApi.saveAsPlaylist(toAdd)
+    }
+
     return(
         <div>
             <button onClick={resetRecommendations}
             className="bg-slate-400 p-1">Reset Recommendations</button>
-            <button onClick={resetRecommendations}
+            <button onClick={savePlaylist}
             className="bg-slate-400 p-1">Save playlist</button>
 
         <table>

@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types'
 import {useSpotifyApiContext} from '../context/SpotifyApiContext'
+import {useUserContext} from '../context/UserContext'
 
 export default function TrackTable({items, getRecs}) {
 
     const {spotifyApi} = useSpotifyApiContext()
+    const {user} = useUserContext()
 
     function formatDuration(duration) {
         // utc to minutes:seconds
@@ -25,12 +27,24 @@ export default function TrackTable({items, getRecs}) {
         spotifyApi.saveAsPlaylist(toAdd)
     }
 
+    function playPlaylist() {
+        // play
+        if(user.product !== 'premium') {
+            console.log("I'm sorry, this is a spotify premium only feature, please save the playlist and open it in the spotify app")
+        } else {
+            console.log("Now playing generated playlist")
+            // given the list of tracks, play them in the app
+            const uris = items.map((item) => item.uri)
+            spotifyApi.startPlayback(uris, null)
+        }
+    }
     return(
         <div>
             <button onClick={resetRecommendations}
             className="bg-slate-400 p-1">Reset Recommendations</button>
             <button onClick={savePlaylist}
             className="bg-slate-400 p-1">Save playlist</button>
+            <button onClick={playPlaylist} className="bg-slate-400 p-1">Play</button>
 
         <table>
             <tbody>

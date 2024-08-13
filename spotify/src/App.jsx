@@ -22,11 +22,6 @@ function Providers({code}) {
 					<Dashboard />
 				</SpotifyApiProvider>
 			</UserProvider>
-			{/* <SpotifyApiProvider>
-				<UserProvider>
-					<Dashboard />
-				</UserProvider>
-			</SpotifyApiProvider> */}
 		</AuthProvider>
 	)
 }

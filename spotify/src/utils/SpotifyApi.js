@@ -71,6 +71,7 @@ export default class SpotifyApi {
             console.log("err: ", err)
         })
     }
+
     getRelatedArtists(id) {
         // spotify artist id
         return fetch(this.apiUrl + `artists/${id}/related-artists`, {
@@ -122,5 +123,49 @@ export default class SpotifyApi {
         });
     }
     
+    getAvailableDevices() {
+        return fetch(this.apiUrl + 'me/player/devices', {
+            headers: {
+                'Authorization': `Bearer ${this.accessToken}`
+            }
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error("Error getting users available devices")
+            }
+            return response.json()
+        }).then((data) => {
+            return data
+        })
+    }
 
+
+    // Playback functions
+
+    startPlayback(uris, deviceId) {
+
+        let url;
+        if(deviceId === null || deviceId === undefined) {
+            url = 'me/player/play'
+        } else {
+            url = `me/player/play?device_id=${deviceId}`
+        }
+
+        fetch(this.apiUrl + url, {
+            method: "PUT", 
+            headers: {
+                'Authorization': `Bearer ${this.accessToken}`
+            },
+            body: JSON.stringify({
+                uris: uris
+            })
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error ("Error starting playback")
+            }
+            // return response.json() // does not returna  json object
+            console.log("beginning playback")
+        }).catch((err) => {
+            console.log("err: ", err)
+        })
+    }
 }

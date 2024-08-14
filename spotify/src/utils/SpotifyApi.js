@@ -23,7 +23,9 @@ export default class SpotifyApi {
             }
             return response.json()
         }).then((data) => {
-            console.log("successfully added items to playlist")
+            return data
+        }).catch((err) => {
+            console.log("err: ", err)
         })
     }
 
@@ -43,12 +45,6 @@ export default class SpotifyApi {
             }
             return response.json()
         }).then((data) => {
-            // returns a playlist, make calls to add items to this playlist here? Add items ([items])
-
-            // delay in spotify's servers
-            // this.addTracksToPlaylist(data.id, tracks)
-            // console.log("playlist", data)
-            // this.addTracksToPlaylist(data.id, tracks)
             setTimeout(() => {
                 this.addTracksToPlaylist(data.id, tracks)
             }, 1000)
@@ -162,7 +158,6 @@ export default class SpotifyApi {
             if(!response.ok) {
                 throw new Error ("Error starting playback")
             }
-            // return response.json() // does not returna  json object
             console.log("beginning playback")
         }).catch((err) => {
             console.log("err: ", err)

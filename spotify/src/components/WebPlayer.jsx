@@ -100,58 +100,62 @@ export default function Webplayer() {
             </div>
         )
     }
+
+    function initializeWebplayer() {
+        window.onSpotifyWebPlaybackSDKReady = () => {
+            player.current = new window.Spotify.Player({
+                name: 'SpotifyRecsPlayer',
+                getOAuthToken: cb => { cb(accessToken); },
+                volume: 0.5
+            });
+
+            player.current.addListener('ready', ({ device_id }) => {
+                console.log('Ready with Device ID', device_id);
+            });
+    
+            player.current.addListener('not_ready', ({ device_id }) => {
+                console.log('Device ID has gone offline', device_id);
+            });
+
+            player.current.addListener('player_state_changed', ( state => {
+                if (!state) {
+                    return;
+                }
+            
+                setTrack(state.track_window.current_track);
+                setPaused(state.paused);
+            
+                player.current.getCurrentState().then( state => { 
+                    (!state)? setActive(false) : setActive(true) 
+                });
+            
+            }));
+
+            player.current.connect();
+        };
+    }
+    
     useEffect(() => {
         const script = document.createElement("script");
         if(player.current) {
             disconnectPlayer()
-            // return
         }
 
         if(accessToken) {
-            script.src = "https://sdk.scdn.co/spotify-player.js";
+            script.src = "https://sdk.scdn.co/spotify-player.js"; 
             script.async = true;
-        
             document.body.appendChild(script);
-            window.onSpotifyWebPlaybackSDKReady = () => {
-    
-                player.current = new window.Spotify.Player({
-                    name: 'SpotifyRecsPlayer',
-                    getOAuthToken: cb => { cb(accessToken); },
-                    volume: 0.5
-                });
-    
-                player.current.addListener('ready', ({ device_id }) => {
-                    console.log('Ready with Device ID', device_id);
-                });
-        
-                player.current.addListener('not_ready', ({ device_id }) => {
-                    console.log('Device ID has gone offline', device_id);
-                });
-    
-                player.current.addListener('player_state_changed', ( state => {
-                    if (!state) {
-                        return;
-                    }
-                
-                    setTrack(state.track_window.current_track);
-                    setPaused(state.paused);
-                
-                    player.current.getCurrentState().then( state => { 
-                        (!state)? setActive(false) : setActive(true) 
-                    });
-                
-                }));
-
-                // connect later
-                player.current.connect();
-            };
+            initializeWebplayer()
         }
 
         return () => {
-            const existingScript = document.querySelector(`script[src="${script.src}"]`);
-            if (existingScript) {
-                document.body.removeChild(existingScript);
-            }
+            const iframe = document.querySelector('iframe[src="https://sdk.scdn.co/embedded/index.html"]');
+            const existingScript = document.querySelector('script[src="https://sdk.scdn.co/spotify-player.js"')
+            if (iframe && existingScript) {
+                document.body.removeChild(existingScript)
+                document.body.removeChild(iframe) 
+                console.log(existingScript) 
+            } 
             if (player.current) {
                 player.current.disconnect();
             }
@@ -168,16 +172,9 @@ export default function Webplayer() {
     return (
         <>
             <div className="webplayer">
-
-                {/* Only render these if CURRENT PLAYING webplayer */}
-                {/*  */}
-                {/* {renderTrackDetails()}
-                {renderWebplayerControls()} */}
                 {renderWebplayerIfPlaying()}
-                {/*  */}
                 {renderDevicesAvailable()}
             </div>
          </>
     )
-    
 }

@@ -19,11 +19,11 @@ export default function SpotifyApiProvider({children}) {
     useEffect(() => {
 
         if(accessToken && user) {
-            console.log("SUER", user)
             const api = new SpotifyApi(accessToken, user.id)
             setSpotifyApi(api)
         }
     }, [accessToken, user])
+
 
     return(
         <>

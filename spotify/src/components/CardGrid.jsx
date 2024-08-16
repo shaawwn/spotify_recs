@@ -40,12 +40,10 @@ function GridItem({item, getArtistRecs, getTrackRecs, artists, tracks}) {
 
     function handleClick() {
         // needs access to artistID
-        console.log("get recs in click", item)
         if(artists === true) {
             getArtistRecs(item)
         } else if(tracks === true) {
             getTrackRecs([item.id], [], [])
-            console.log("Getting track recs instead")
         }
     }
 

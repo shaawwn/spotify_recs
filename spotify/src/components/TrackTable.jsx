@@ -35,7 +35,36 @@ export default function TrackTable({items, getRecs}) {
             console.log("Now playing generated playlist")
             // given the list of tracks, play them in the app
             const uris = items.map((item) => item.uri)
-            spotifyApi.startPlayback(uris, null)
+
+            const getDevices = async () => {
+                const devices = await spotifyApi.getAvailableDevices()
+                console.log("devices on play", devices)
+
+                // find active device, if any
+                const activeDevices = devices.filter((device) => device.is_active === true)
+
+
+                if(activeDevices.length > 0) {
+                    spotifyApi.startPlayback(uris, null)
+                    try {
+                        spotifyApi.startPlayback(uris, null)
+                    } catch (err) {
+                        console.log("Error starting playback with default palyer")
+                    }
+                } else if(activeDevices.length === 0) {
+                    const browserPlayer = devices.filter((device) => device.name="SpotifyRecsPlayer")
+                    try {
+                        const player = browserPlayer[browserPlayer.length - 1]
+                        spotifyApi.startPlayback(uris, player.id)
+                    } catch (err) {
+                        console.log("Error starting playback with webplayer")
+                    }
+   
+                }
+                // return devices
+            }
+            getDevices()
+            // spotifyApi.startPlayback(uris, null)
         }
     }
     return(

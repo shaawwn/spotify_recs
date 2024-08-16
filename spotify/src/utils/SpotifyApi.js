@@ -130,7 +130,9 @@ export default class SpotifyApi {
             }
             return response.json()
         }).then((data) => {
-            return data
+            return data.devices
+        }).catch((err) => {
+            console.log("err", err)
         })
     }
 
@@ -145,7 +147,7 @@ export default class SpotifyApi {
         } else {
             url = `me/player/play?device_id=${deviceId}`
         }
-
+   
         fetch(this.apiUrl + url, {
             method: "PUT", 
             headers: {
@@ -159,6 +161,26 @@ export default class SpotifyApi {
                 throw new Error ("Error starting playback")
             }
             console.log("beginning playback")
+        }).catch((err) => {
+            console.log("err: ", err)
+        })
+    }
+
+    transferPlayback(deviceId) {
+        fetch(this.apiUrl + 'me/player', {
+            method: "PUT",
+            headers: {
+                'Authorization': `Bearer ${this.accessToken}`
+            },
+            body: JSON.stringify({
+                device_ids: [deviceId],
+                play: true
+            })
+        }).then((response) => {
+            if(!response.ok) {
+                return new Error("Error transferring playback")
+            }
+            console.log("Playback transfer")
         }).catch((err) => {
             console.log("err: ", err)
         })

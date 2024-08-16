@@ -32,7 +32,6 @@ export default function useRecommendations() {
         // feed it an artist id
         try {
             const recs = await spotifyApi.getRelatedArtists(artist.id)
-            console.log(recs)
             setRecommendedArtists(recs.artists)
 
             // set seeds for track recommendations

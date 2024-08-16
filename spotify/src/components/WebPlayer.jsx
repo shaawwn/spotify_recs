@@ -2,7 +2,7 @@ import {useEffect, useState, useRef} from 'react'
 import {useAuthContext} from '../context/AuthContext'
 import { useSpotifyApiContext } from '../context/SpotifyApiContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faPlay, faBackward, faForward, faTabletScreenButton} from '@fortawesome/free-solid-svg-icons'
+import {faPlay, faBackward, faForward, faTabletScreenButton, faDesktop, faLaptop, faMobileScreen} from '@fortawesome/free-solid-svg-icons'
 
 import DefaultImage from '../assets/images/default.png'
 
@@ -13,7 +13,7 @@ export default function Webplayer() {
     const [is_paused, setPaused] = useState(false);
     const [is_active, setActive] = useState(false);
     const [current_track, setTrack] = useState();
-    const [devices, setDevices] = useState()
+    const [appDeviceId, setAppDeviceId] = useState()
 
 
     function disconnectPlayer() {
@@ -25,7 +25,17 @@ export default function Webplayer() {
 
     function renderWebplayerIfPlaying() {
         // IF the webplayback is current playing device, render controls and palybacks
+        const webplayer = document.getElementById('webplayer')
+
         if(current_track) {
+
+            // it keeps going back in forth
+            if(webplayer.style.justifyContent === 'space-between') {
+                webplayer.style.justifyContent = 'flex-end'
+            } else {
+                console.log("Switchin to space-between")
+                webplayer.style.justifyContent = 'space-between'
+            }
             return(
                 <>
                     {renderTrackDetails()}
@@ -62,9 +72,6 @@ export default function Webplayer() {
     }
 
     function renderWebplayerControls() {
-        if(player) {
-            console.log("Devices set to current", current_track)
-        }
         return(
             <div className="webplayer__controls">
             <div>
@@ -90,15 +97,11 @@ export default function Webplayer() {
     }
 
     function renderDevicesAvailable() {
-        return(
-            <div>
-                <FontAwesomeIcon 
-                    icon={faTabletScreenButton} 
-                    size="2x"
-                    color="#1DB954"
-                    />
-            </div>
-        )
+        if(appDeviceId) {
+            return(
+                <DevicesController spotifyApi={spotifyApi}/>
+            )
+        }
     }
 
     function initializeWebplayer() {
@@ -111,6 +114,7 @@ export default function Webplayer() {
 
             player.current.addListener('ready', ({ device_id }) => {
                 console.log('Ready with Device ID', device_id);
+                setAppDeviceId(device_id)
             });
     
             player.current.addListener('not_ready', ({ device_id }) => {
@@ -123,14 +127,14 @@ export default function Webplayer() {
                 }
             
                 setTrack(state.track_window.current_track);
-                setPaused(state.paused);
+                setPaused(state.paused); // pause on switch
+
             
                 player.current.getCurrentState().then( state => { 
                     (!state)? setActive(false) : setActive(true) 
                 });
             
             }));
-
             player.current.connect();
         };
     }
@@ -171,10 +175,90 @@ export default function Webplayer() {
 
     return (
         <>
-            <div className="webplayer">
+            <div id="webplayer" className="webplayer">
                 {renderWebplayerIfPlaying()}
                 {renderDevicesAvailable()}
             </div>
          </>
+    )
+}
+
+function DevicesController({spotifyApi}) {
+
+    // faTabletScreenButton, faDesktop, faLaptop, faMobileScreen
+    // needs to be positioned to the right
+    const [devices, setDevices] = useState()
+
+    useEffect(() => {
+        const fetchDevices = async () => {
+            try {
+                const response = await spotifyApi.getAvailableDevices();
+                // console.log("Devices", response);
+                setDevices(response.devices); 
+            } catch (error) {
+                console.error("Error fetching devices:", error);
+            }
+        };
+        fetchDevices();
+    }, [])
+
+    function transferPlayback(id) {
+        // browser is one step behind when it gets to this.
+        // console.log("Transfering to : ", id)
+        // const fetchDevices = async () => {
+        //     try {
+        //         const response = await spotifyApi.getAvailableDevices();
+                
+        //         console.log("Devices", response);
+        //     } catch (error) {
+        //         console.error("Error fetching devices:", error);
+        //     }
+        // };
+        // fetchDevices();//
+
+        spotifyApi.transferPlayback(id)
+    }
+
+    function handleClick() {
+        const deviceMenu = document.getElementsByClassName('device-menu')[0]
+// 
+        if(deviceMenu) {
+            if(deviceMenu.style.display === 'flex') {
+                deviceMenu.style.display = 'none'
+            } else {
+                deviceMenu.style.display = 'flex'   
+            }
+        }
+    }
+    return(
+        <div>
+            {/* Select device menu */}
+            <div className="device-menu">
+                {devices ? 
+                <>
+                    {devices.map((device, index) =>
+                        <div key={index} className="flex gap-[10px]">
+                            <FontAwesomeIcon 
+                                icon={faTabletScreenButton} 
+                                size="2x"
+                                color={device.is_active ? "#1DB954" : "white"}
+                                onClick={() => transferPlayback(device.id)}
+                            />
+
+                            <p>{device.name}</p>
+                        </div>
+                    )}
+                </>
+                :null
+                }
+            </div>
+            <FontAwesomeIcon 
+                icon={faTabletScreenButton} 
+                size="2x"
+                color="#1DB954"
+                onClick={handleClick}
+            />
+
+        </div>
     )
 }

@@ -9,8 +9,6 @@ function getRandoms(num, range) {
         randoms.add(n)
     }
 
-    console.log("randoms", randoms)
-
     return randoms
 }
 
@@ -19,7 +17,6 @@ function getRecArtistArray(indices, array) {
         .map(index => array[index])
         .filter(item => item !== undefined)
 
-        console.log(list)
     return list
 }
 export {

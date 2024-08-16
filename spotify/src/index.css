@@ -174,15 +174,15 @@ button:focus-visible {
 	padding-left: 40px;
 	padding-right: 40px;
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-end;
+	height: 5vh;
 }
 
 .webplayer__controls {
-	background-color: green;
 	display: flex;
-	/* gap: 20px; */
 	flex-direction: column;
 	justify-content: center;
+
 }
 
 .webplayer__controls__control {
@@ -194,6 +194,19 @@ button:focus-visible {
 	height: 50px;
 	overflow: hidden;
 }
+
+.device-menu {
+	display: none;
+	background-color: var(--spotify-black);
+	position: absolute;
+	bottom: 5vh;
+	right: 0px;
+	padding: 2rem;
+	flex-direction: column;
+	gap: 40px;
+
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
